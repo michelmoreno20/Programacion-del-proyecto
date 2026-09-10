@@ -1,0 +1,74 @@
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+body{
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    background-color: #D1B08D;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+form{
+    background-color: transparent;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+.Columnas{
+    display: flex;
+
+}
+form h1{
+    font-size: 30px;
+    color: #000000;
+    margin-bottom: 35px;
+}
+input{
+    padding: 12px;
+    border-radius: 15px;
+    background-color: #F9ECD9;
+    border: 2px solid transparent;
+    margin-bottom: 25px;
+    outline-color: #000000;
+    color: #000000;
+    font-size: 11px;
+}
+select{
+    padding: 12px;
+    border-radius: 15px;
+    background-color: #F9ECD9;
+    border: 2px solid transparent;
+    margin-bottom: 25px;
+    outline-color: #000000;
+    color: #000000;
+    font-size: 11px;
+}
+option{
+    background-color: #F9ECD9;
+    border-radius: 10px;
+}
+.btn{
+    background-color: #000000;
+    border: 2px solid #E4E182;
+    color: #E4E182;
+    cursor: pointer;
+}
+.Columna1{
+    display: flex;
+    flex-direction: column;
+    margin-right: 30px;
+}
+.Columna2{
+    display: flex;
+    flex-direction: column;
+
+}
+.Columna3{
+    display: flex;
+    flex-direction: column;
+    margin-left: 30px;
+
+}
