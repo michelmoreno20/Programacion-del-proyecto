@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrarse</title>
+    <link rel="stylesheet" href="Registrarse_GUI.css">
+</head>
+<body>
+    <form action="Registrarse.php" method="POST">
+        <h1>Registrarse</h1>
+        <div class="Columnas">
+            <div class="Columna1">
+                <input type="email" name="email" placeholder="Email">
+                <input type="password" name="contraseña" placeholder="Contraseña">
+                <input type="password" name="confirmar_contraseña" placeholder="Confirmar contraseña">
+            </div>
+            <div class="Columna2">
+                <select name="pais">
+                    <option value="Colombia">Colombia</option>
+                </select>
+                <select name="departamento">
+                    <option value="Cundinamarca">Cundinamarca</option>
+                </select>
+                <select name="municipio">
+                    <option value="Fusagasugá">Fusagasugá</option>
+                    <option value="Bogotá">Bogotá</option>
+                </select>
+                <input type="text" name="direccion" placeholder="Dirección">
+                <input type="submit" class="btn" name="registrar" value="Registrarse">
+                <input type="submit" class="btn" name="volver" value="Volver">
+            </div>
+
+            <div class="Columna3">
+                <input type="text" name="nombres" placeholder="Nombres">
+                <input type="text" name="apellidos" placeholder="Apellidos">
+            </div>
+        </div>
+    </form>
+</body>
+</html>
