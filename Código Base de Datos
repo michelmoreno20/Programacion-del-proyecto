@@ -1,0 +1,280 @@
+SET FOREIGN_KEY_CHECKS = 0;
+DROP TABLE IF EXISTS Detalle_Venta;
+DROP TABLE IF EXISTS Detalle_Pedido;
+DROP TABLE IF EXISTS Venta;
+DROP TABLE IF EXISTS Pedido_Proveedor;
+DROP TABLE IF EXISTS Producto;
+DROP TABLE IF EXISTS Usuario;
+DROP TABLE IF EXISTS Cliente;
+DROP TABLE IF EXISTS Proveedor;
+DROP TABLE IF EXISTS Categoria;
+SET FOREIGN_KEY_CHECKS = 1;
+
+CREATE TABLE Categoria (
+  id_categoria INT PRIMARY KEY AUTO_INCREMENT,
+  nombre VARCHAR(50) NOT NULL,
+  descripcion VARCHAR(200)
+);
+
+CREATE TABLE Proveedor (
+  id_proveedor INT PRIMARY KEY AUTO_INCREMENT,
+  nombre VARCHAR(100) NOT NULL,
+  contacto VARCHAR(100),
+  telefono VARCHAR(20)
+);
+
+CREATE TABLE Cliente (
+  id_cliente INT PRIMARY KEY AUTO_INCREMENT,
+  nombre VARCHAR(100) NOT NULL,
+  telefono VARCHAR(20),
+  email VARCHAR(100)
+);
+
+CREATE TABLE Usuario (
+  id_usuario INT PRIMARY KEY AUTO_INCREMENT,
+  nombre VARCHAR(100) NOT NULL,
+  contrasena VARCHAR(100) NOT NULL,
+  rol VARCHAR(20) NOT NULL
+);
+
+CREATE TABLE Producto (
+  id_producto INT PRIMARY KEY AUTO_INCREMENT,
+  nombre VARCHAR(100) NOT NULL,
+  precio DECIMAL(10,2) NOT NULL,
+  cantidad_stock INT NOT NULL,
+  id_categoria INT,
+  FOREIGN KEY (id_categoria) REFERENCES Categoria(id_categoria)
+);
+
+CREATE TABLE Venta (
+  id_venta INT PRIMARY KEY AUTO_INCREMENT,
+  fecha DATETIME NOT NULL,
+  total DECIMAL(10,2) NOT NULL,
+  id_usuario INT,
+  id_cliente INT,
+  FOREIGN KEY (id_usuario) REFERENCES Usuario(id_usuario),
+  FOREIGN KEY (id_cliente) REFERENCES Cliente(id_cliente)
+);
+
+CREATE TABLE Detalle_Venta (
+  id_detalle INT PRIMARY KEY AUTO_INCREMENT,
+  cantidad INT NOT NULL,
+  subtotal DECIMAL(10,2) NOT NULL,
+  id_venta INT,
+  id_producto INT,
+  FOREIGN KEY (id_venta) REFERENCES Venta(id_venta),
+  FOREIGN KEY (id_producto) REFERENCES Producto(id_producto)
+);
+
+CREATE TABLE Pedido_Proveedor (
+  id_pedido INT PRIMARY KEY AUTO_INCREMENT,
+  fecha DATETIME NOT NULL,
+  id_proveedor INT,
+  FOREIGN KEY (id_proveedor) REFERENCES Proveedor(id_proveedor)
+);
+
+CREATE TABLE Detalle_Pedido (
+  id_detalle_pedido INT PRIMARY KEY AUTO_INCREMENT,
+  cantidad INT NOT NULL,
+  id_pedido INT,
+  id_producto INT,
+  FOREIGN KEY (id_pedido) REFERENCES Pedido_Proveedor(id_pedido),
+  FOREIGN KEY (id_producto) REFERENCES Producto(id_producto)
+);
+
+INSERT INTO Categoria (nombre, descripcion) VALUES
+('Bebidas calientes', 'Cafe, te y bebidas calientes'),
+('Bebidas frias', 'Jugos, malteadas y bebidas frias'),
+('Alimentos', 'Comidas y snacks'),
+('Postres', 'Dulces y postres'),
+('Combos', 'Combos especiales');
+
+INSERT INTO Proveedor (nombre, contacto, telefono) VALUES
+('Cafe Colombia', 'Juan Perez', '3001234567'),
+('Distribuidora La Mejor', 'Maria Gomez', '3019876543'),
+('Panaderia El Trigal', 'Carlos Lopez', '3025551234'),
+('Lacteos del Campo', 'Ana Martinez', '3034445678'),
+('Frutas y Verduras SA', 'Pedro Ramirez', '3041112233'),
+('Bebidas Nacionales', 'Laura Torres', '3052223344'),
+('Importadora Gourmet', 'Diego Vargas', '3063334455'),
+('Dulces y Confites', 'Sofia Herrera', '3074445566'),
+('Granos y Cereales', 'Miguel Castro', '3085556677'),
+('Distribuidora Central', 'Isabel Mora', '3096667788');
+
+INSERT INTO Cliente (nombre, telefono, email) VALUES
+('Maria Lopez', '3001111111', 'maria@gmail.com'),
+('Carlos Ruiz', '3002222222', 'carlos@gmail.com'),
+('Ana Gomez', '3003333333', 'ana@gmail.com'),
+('Pedro Martinez', '3004444444', 'pedro@gmail.com'),
+('Laura Torres', '3005555555', 'laura@gmail.com'),
+('Diego Castro', '3006666666', 'diego@gmail.com'),
+('Sofia Vargas', '3007777777', 'sofia@gmail.com'),
+('Juan Herrera', '3008888888', 'juan@gmail.com'),
+('Isabel Mora', '3009999999', 'isabel@gmail.com'),
+('Miguel Pena', '3010000000', 'miguel@gmail.com'),
+('Valentina Cruz', '3011111111', 'valentina@gmail.com'),
+('Santiago Diaz', '3012222222', 'santiago@gmail.com'),
+('Camila Reyes', '3013333333', 'camila@gmail.com'),
+('Andres Muñoz', '3014444444', 'andres@gmail.com'),
+('Paola Jimenez', '3015555555', 'paola@gmail.com'),
+('Ricardo Salazar', '3016666666', 'ricardo@gmail.com'),
+('Natalia Ospina', '3017777777', 'natalia@gmail.com'),
+('Felipe Cardona', '3018888888', 'felipe@gmail.com'),
+('Daniela Rios', '3019999999', 'daniela@gmail.com'),
+('Alejandro Gil', '3020000000', 'alejandro@gmail.com'),
+('Luisa Fernandez', '3021111111', 'luisa@gmail.com'),
+('Esteban Mora', '3022222222', 'esteban@gmail.com'),
+('Juliana Perez', '3023333333', 'juliana@gmail.com'),
+('David Ramirez', '3024444444', 'david@gmail.com'),
+('Mariana Gomez', '3025555555', 'mariana@gmail.com'),
+('Sergio Lopez', '3026666666', 'sergio@gmail.com'),
+('Paula Herrera', '3027777777', 'paula@gmail.com'),
+('Cristian Castro', '3028888888', 'cristian@gmail.com'),
+('Monica Vargas', '3029999999', 'monica@gmail.com'),
+('Jhon Torres', '3030000000', 'jhon@gmail.com');
+
+INSERT INTO Usuario (nombre, contrasena, rol) VALUES
+('Admin Principal', 'admin123', 'administrador'),
+('Juan Empleado', 'juan123', 'empleado'),
+('Maria Empleada', 'maria123', 'empleado'),
+('Carlos Empleado', 'carlos123', 'empleado'),
+('Ana Empleada', 'ana123', 'empleado');
+
+INSERT INTO Producto (nombre, precio, cantidad_stock, id_categoria) VALUES
+('Cafe americano', 2500, 100, 1),
+('Capuchino', 3500, 80, 1),
+('Cafe con leche', 3000, 90, 1),
+('Chocolate caliente', 3000, 70, 1),
+('Te verde', 2000, 60, 1),
+('Te negro', 2000, 60, 1),
+('Jugo de naranja', 3000, 60, 2),
+('Jugo de mango', 3000, 55, 2),
+('Malteada de fresa', 5000, 40, 2),
+('Malteada de chocolate', 5000, 40, 2),
+('Limonada', 2500, 80, 2),
+('Agua mineral', 1500, 100, 2),
+('Croissant', 4000, 40, 3),
+('Sandwich de jamon', 5000, 30, 3),
+('Sandwich de pollo', 5500, 30, 3),
+('Empanada', 2000, 50, 3),
+('Arepa con queso', 3000, 45, 3),
+('Tostadas con mantequilla', 2500, 35, 3),
+('Ensalada de frutas', 4000, 25, 3),
+('Brownie', 3500, 30, 4),
+('Cheesecake', 6000, 20, 4),
+('Muffin de chocolate', 3000, 35, 4),
+('Dona glaseada', 2500, 40, 4),
+('Galletas', 1500, 60, 4),
+('Combo desayuno', 8000, 20, 5),
+('Combo almuerzo', 12000, 15, 5),
+('Combo cafe y pastel', 7000, 25, 5),
+('Combo familiar', 20000, 10, 5),
+('Combo estudiante', 6000, 30, 5),
+('Combo ejecutivo', 15000, 15, 5);
+
+INSERT INTO Venta (fecha, total, id_usuario, id_cliente) VALUES
+('2026-01-05 08:00:00', 6000, 1, 1),
+('2026-01-06 09:00:00', 8000, 2, 2),
+('2026-01-07 10:00:00', 5000, 3, 3),
+('2026-01-08 11:00:00', 12000, 1, 4),
+('2026-01-09 08:30:00', 7000, 2, 5),
+('2026-01-10 09:30:00', 3500, 3, 6),
+('2026-01-11 10:30:00', 9000, 1, 7),
+('2026-01-12 11:30:00', 6500, 2, 8),
+('2026-01-13 08:00:00', 4000, 3, 9),
+('2026-01-14 09:00:00', 15000, 1, 10),
+('2026-01-15 10:00:00', 8000, 2, 11),
+('2026-01-16 11:00:00', 5500, 3, 12),
+('2026-01-17 08:30:00', 7000, 1, 13),
+('2026-01-18 09:30:00', 3000, 2, 14),
+('2026-01-19 10:30:00', 6000, 3, 15),
+('2026-01-20 08:00:00', 9500, 1, 16),
+('2026-01-21 09:00:00', 4500, 2, 17),
+('2026-01-22 10:00:00', 8000, 3, 18),
+('2026-01-23 11:00:00', 12000, 1, 19),
+('2026-01-24 08:30:00', 6000, 2, 20),
+('2026-01-25 09:30:00', 7500, 3, 21),
+('2026-01-26 10:30:00', 5000, 1, 22),
+('2026-01-27 08:00:00', 9000, 2, 23),
+('2026-01-28 09:00:00', 3500, 3, 24),
+('2026-01-29 10:00:00', 6500, 1, 25),
+('2026-01-30 11:00:00', 8000, 2, 26),
+('2026-02-01 08:30:00', 4000, 3, 27),
+('2026-02-02 09:30:00', 7000, 1, 28),
+('2026-02-03 10:30:00', 5500, 2, 29),
+('2026-02-04 08:00:00', 9000, 3, 30);
+
+INSERT INTO Detalle_Venta (cantidad, subtotal, id_venta, id_producto) VALUES
+(2, 5000, 1, 1),
+(1, 4000, 2, 13),
+(2, 7000, 3, 7),
+(1, 12000, 4, 26),
+(1, 7000, 5, 27),
+(1, 3500, 6, 2),
+(2, 9000, 7, 29),
+(1, 6000, 8, 25),
+(2, 8000, 9, 13),
+(1, 15000, 10, 28),
+(2, 8000, 11, 9),
+(1, 5500, 12, 15),
+(1, 7000, 13, 27),
+(1, 3000, 14, 4),
+(2, 6000, 15, 1),
+(1, 9500, 16, 30),
+(1, 4500, 17, 22),
+(2, 8000, 18, 9),
+(1, 12000, 19, 26),
+(2, 6000, 20, 1),
+(1, 7500, 21, 29),
+(2, 5000, 22, 6),
+(1, 9000, 23, 25),
+(1, 3500, 24, 2),
+(1, 6500, 25, 27),
+(2, 8000, 26, 10),
+(2, 8000, 27, 7),
+(1, 7000, 28, 27),
+(1, 5500, 29, 15),
+(1, 9000, 30, 25);
+
+INSERT INTO Pedido_Proveedor (fecha, id_proveedor) VALUES
+('2026-01-01 08:00:00', 1),
+('2026-01-05 09:00:00', 2),
+('2026-01-10 10:00:00', 3),
+('2026-01-15 11:00:00', 4),
+('2026-01-20 08:00:00', 5);
+
+INSERT INTO Detalle_Pedido (cantidad, id_pedido, id_producto) VALUES
+(50, 1, 1),
+(40, 1, 2),
+(30, 2, 13),
+(25, 2, 14),
+(20, 3, 20),
+(15, 3, 21),
+(35, 4, 7),
+(30, 4, 8),
+(25, 5, 18),
+(20, 5, 19);
+-- TRANSACCIONES
+-- Transaccion exitosa: registrar una venta
+START TRANSACTION;
+
+INSERT INTO Venta (fecha, total, id_usuario, id_cliente)
+VALUES (NOW(), 7000.00, 1, 1);
+
+SET @id_venta = LAST_INSERT_ID();
+
+INSERT INTO Detalle_Venta (cantidad, subtotal, id_venta, id_producto)
+VALUES (2, 7000.00, @id_venta, 1);
+
+UPDATE Producto SET cantidad_stock = cantidad_stock - 2
+WHERE id_producto = 1;
+
+COMMIT;
+
+-- Transaccion con error: simular rollback
+START TRANSACTION;
+
+INSERT INTO Venta (fecha, total, id_usuario, id_cliente)
+VALUES (NOW(), 5000.00, 1, 2);
+
+ROLLBACK;
