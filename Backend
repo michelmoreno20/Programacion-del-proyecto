@@ -1,0 +1,96 @@
+require('dotenv').config();
+const express = require('express');
+const mysql = require('mysql2');
+const cors = require('cors');
+
+const app = express();
+app.use(cors());
+app.use(express.json());
+
+const db = mysql.createConnection({
+  host: process.env.DB_HOST,
+  port: 3307,
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME
+});
+
+db.connect(err => {
+  if (err) {
+    console.log('Error conectando a la base de datos:', err);
+    return;
+  }
+  console.log('Conectado a MySQL en Docker');
+});
+
+app.get('/productos/categoria/:id', (req, res) => {
+  const { id } = req.params;
+  db.query('SELECT * FROM Producto WHERE id_categoria = ?', [id], (err, results) => {
+    if (err) return res.status(500).json({ error: err });
+    res.json(results);
+  });
+});
+
+app.get('/productos', (req, res) => {
+  db.query('SELECT * FROM Producto', (err, results) => {
+    if (err) return res.status(500).json({ error: err });
+    res.json(results);
+  });
+});
+
+app.get('/ventas', (req, res) => {
+  db.query('SELECT * FROM Venta ORDER BY fecha DESC', (err, results) => {
+    if (err) return res.status(500).json({ error: err });
+    res.json(results);
+  });
+});
+
+app.get('/clientes', (req, res) => {
+  db.query('SELECT * FROM Cliente', (err, results) => {
+    if (err) return res.status(500).json({ error: err });
+    res.json(results);
+  });
+});
+
+app.get('/categorias', (req, res) => {
+  db.query('SELECT * FROM Categoria', (err, results) => {
+    if (err) return res.status(500).json({ error: err });
+    res.json(results);
+  });
+});
+
+app.post('/ventas', (req, res) => {
+  const { id_cliente, id_usuario, items } = req.body;
+  
+  const total = items.reduce((sum, item) => sum + (item.precio * item.cantidad), 0);
+  
+  db.query(
+    'INSERT INTO Venta (fecha, total, id_usuario, id_cliente) VALUES (NOW(), ?, ?, ?)',
+    [total, id_usuario, id_cliente],
+    (err, result) => {
+      if (err) return res.status(500).json({ error: err });
+      
+      const id_venta = result.insertId;
+      const detalles = items.map(item => [item.cantidad, item.precio * item.cantidad, id_venta, item.id_producto]);
+      
+      db.query(
+        'INSERT INTO Detalle_Venta (cantidad, subtotal, id_venta, id_producto) VALUES ?',
+        [detalles],
+        (err2) => {
+          if (err2) return res.status(500).json({ error: err2 });
+          
+          items.forEach(item => {
+            db.query('UPDATE Producto SET cantidad_stock = cantidad_stock - ? WHERE id_producto = ?',
+              [item.cantidad, item.id_producto]);
+          });
+          
+          res.json({ mensaje: 'Venta registrada', id_venta });
+        }
+      );
+    }
+  );
+});
+
+app.listen(process.env.PORT, () => {
+  console.log('API corriendo en http://localhost:3000');
+});
