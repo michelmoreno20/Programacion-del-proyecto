@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaffa</title>
+    <link rel="stylesheet" href="Pagina_Principal_GUI.css">
+</head>
+<body>
+
+    <ul class="Menu">
+        <li><a href="#" onclick="filtrarCategoria(null); return false;">Menú</a>
+            <ul>
+                <li><a href="#" onclick="filtrarCategoria(1); return false;">Bebidas calientes</a></li>
+                <li><a href="#" onclick="filtrarCategoria(2); return false;">Bebidas frías</a></li>
+                <li><a href="#" onclick="filtrarCategoria(3); return false;">Alimentos</a></li>
+                <li><a href="#" onclick="filtrarCategoria(4); return false;">Postres</a></li>
+                <li><a href="#" onclick="filtrarCategoria(5); return false;">Combos</a></li>
+            </ul>
+        </li>
+        <li><a href="#">Ventas</a></li>
+        <li><a href="#">Clientes</a></li>
+        <li><a href="#">Mi perfil</a></li>
+        <li><a href="#" onclick="abrirCarrito(); return false;">🛒 Carrito (<span id="contador-carrito">0</span>)</a></li>
+    </ul>
+
+    <div class="hero">
+        <h1>☕ Kaffa</h1>
+        <p>El mejor café del municipio, hecho con amor</p>
+    </div>
+
+    <div class="seccion-productos">
+        <h2 id="titulo-seccion">Todos los Productos</h2>
+        <div id="productos"></div>
+    </div>
+
+    <!-- Carrito -->
+    <div id="carrito-overlay" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000;">
+        <div style="background:white; width:420px; height:100%; position:absolute; right:0; padding:2rem; overflow-y:auto;">
+            <h2 style="color:#3b2a1a;">🛒 Tu Carrito</h2>
+            <div id="carrito-items"></div>
+            <div id="carrito-total" style="font-size:20px; font-weight:bold; color:#c9a96e; margin:1rem 0;"></div>
+            <button onclick="confirmarVenta()" style="background:#3b2a1a; color:white; border:none; padding:1rem 2rem; width:100%; font-size:16px; border-radius:8px; cursor:pointer;">✅ Confirmar compra</button>
+            <button onclick="cerrarCarrito()" style="background:#ccc; color:#333; border:none; padding:0.8rem 2rem; width:100%; font-size:14px; border-radius:8px; cursor:pointer; margin-top:0.5rem;">Cerrar</button>
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2026 Kaffa — Todos los derechos reservados</p>
+    </footer>
+
+    <script>
+        let carrito = [];
+        let categoriaActual = null;
+
+        function mostrarProductos(data) {
+            const contenedor = document.getElementById('productos');
+            contenedor.innerHTML = '';
+            if (data.length === 0) {
+                contenedor.innerHTML = '<p>No hay productos en esta categoría.</p>';
+                return;
+            }
+            data.forEach(p => {
+                contenedor.innerHTML += `
+                    <div class="producto">
+                        <h3>${p.nombre}</h3>
+                        <p>Stock: <span id="stock-${p.id_producto}">${p.cantidad_stock}</span> unidades</p>
+                        <p class="precio">$${Number(p.precio).toLocaleString()}</p>
+                        <button onclick="agregarAlCarrito(${p.id_producto}, '${p.nombre}', ${p.precio})"
+                            style="margin-top:0.8rem; background:#3b2a1a; color:white; border:none; padding:0.5rem 1rem; border-radius:6px; cursor:pointer; width:100%;">
+                            Agregar al carrito
+                        </button>
+                    </div>
+                `;
+            });
+        }
+
+        function filtrarCategoria(id) {
+            categoriaActual = id;
+            const titulos = {
+                null: 'Todos los Productos',
+                1: 'Bebidas calientes',
+                2: 'Bebidas frías',
+                3: 'Alimentos',
+                4: 'Postres',
+                5: 'Combos'
+            };
+            document.getElementById('titulo-seccion').textContent = titulos[id] || 'Productos';
+            const url = id ? `http://localhost:3000/productos/categoria/${id}` : 'http://localhost:3000/productos';
+            fetch(url)
+                .then(res => res.json())
+                .then(data => mostrarProductos(data));
+        }
+
+        function agregarAlCarrito(id, nombre, precio) {
+            const existe = carrito.find(p => p.id_producto === id);
+            if (existe) {
+                existe.cantidad++;
+            } else {
+                carrito.push({ id_producto: id, nombre, precio, cantidad: 1 });
+            }
+            actualizarContador();
+        }
+
+        function actualizarContador() {
+            document.getElementById('contador-carrito').textContent = carrito.reduce((s, p) => s + p.cantidad, 0);
+        }
+
+        function abrirCarrito() {
+            const contenedor = document.getElementById('carrito-items');
+            contenedor.innerHTML = '';
+            if (carrito.length === 0) {
+                contenedor.innerHTML = '<p>El carrito está vacío.</p>';
+                document.getElementById('carrito-total').textContent = '';
+            } else {
+                carrito.forEach(p => {
+                    contenedor.innerHTML += `
+                        <div style="border-bottom:1px solid #eee; padding:0.8rem 0;">
+                            <strong>${p.nombre}</strong><br>
+                            <div style="display:flex; align-items:center; gap:0.5rem; margin-top:0.4rem;">
+                                <button onclick="cambiarCantidad(${p.id_producto}, -1)" style="background:#3b2a1a; color:white; border:none; width:28px; height:28px; border-radius:4px; cursor:pointer; font-size:16px;">−</button>
+                                <span style="font-size:16px; min-width:20px; text-align:center;">${p.cantidad}</span>
+                                <button onclick="cambiarCantidad(${p.id_producto}, 1)" style="background:#3b2a1a; color:white; border:none; width:28px; height:28px; border-radius:4px; cursor:pointer; font-size:16px;">+</button>
+                                <span style="margin-left:auto;">$${(p.precio * p.cantidad).toLocaleString()}</span>
+                                <button onclick="quitarDelCarrito(${p.id_producto})" style="background:#e74c3c; color:white; border:none; padding:0.3rem 0.6rem; border-radius:4px; cursor:pointer;">✕</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                const total = carrito.reduce((s, p) => s + p.precio * p.cantidad, 0);
+                document.getElementById('carrito-total').textContent = `Total: $${total.toLocaleString()}`;
+            }
+            document.getElementById('carrito-overlay').style.display = 'block';
+        }
+
+        function cambiarCantidad(id, delta) {
+            const item = carrito.find(p => p.id_producto === id);
+            if (!item) return;
+            item.cantidad += delta;
+            if (item.cantidad <= 0) {
+                carrito = carrito.filter(p => p.id_producto !== id);
+            }
+            actualizarContador();
+            abrirCarrito();
+        }
+
+        function quitarDelCarrito(id) {
+            carrito = carrito.filter(p => p.id_producto !== id);
+            actualizarContador();
+            abrirCarrito();
+        }
+
+        function cerrarCarrito() {
+            document.getElementById('carrito-overlay').style.display = 'none';
+        }
+
+        function confirmarVenta() {
+            if (carrito.length === 0) {
+                alert('El carrito está vacío.');
+                return;
+            }
+            fetch('http://localhost:3000/ventas', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id_cliente: 1, id_usuario: 1, items: carrito })
+            })
+            .then(res => res.json())
+            .then(data => {
+                alert(`✅ Venta registrada. ID: ${data.id_venta}`);
+                carrito = [];
+                actualizarContador();
+                cerrarCarrito();
+                filtrarCategoria(categoriaActual);
+            })
+            .catch(() => alert('Error al registrar la venta.'));
+        }
+
+        filtrarCategoria(null);
+    </script>
+
+</body>
+</html>
