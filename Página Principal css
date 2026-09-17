@@ -1,0 +1,142 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+body {
+    background-color: #f5f0e8;
+    color: #3b2a1a;
+}
+
+.Menu {
+    list-style: none;
+    display: flex;
+    align-items: center;
+    background-color: #3b2a1a;
+    padding: 0 2rem;
+    gap: 2rem;
+}
+
+.Menu li a {
+    color: #f5f0e8;
+    text-decoration: none;
+    font-size: 15px;
+    padding: 1rem 0.5rem;
+    display: block;
+}
+
+.Menu li a:hover {
+    color: #c9a96e;
+}
+
+.Menu li {
+    position: relative;
+}
+
+.Menu li ul {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    background-color: #3b2a1a;
+    list-style: none;
+    min-width: 150px;
+    z-index: 100;
+}
+
+.Menu li:hover ul {
+    display: block;
+}
+
+.Menu li ul li a {
+    padding: 0.7rem 1rem;
+    font-size: 14px;
+}
+
+.Logo {
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+}
+
+.hero {
+    background-color: #3b2a1a;
+    color: #f5f0e8;
+    text-align: center;
+    padding: 4rem 2rem;
+}
+
+.hero h1 {
+    font-size: 42px;
+    color: #c9a96e;
+    margin-bottom: 1rem;
+}
+
+.hero p {
+    font-size: 18px;
+    color: #d4c5b0;
+}
+
+.seccion-productos {
+    padding: 3rem 2rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.seccion-productos h2 {
+    font-size: 28px;
+    color: #3b2a1a;
+    margin-bottom: 2rem;
+    text-align: center;
+    border-bottom: 2px solid #c9a96e;
+    padding-bottom: 0.5rem;
+}
+
+#productos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1.5rem;
+}
+
+.producto {
+    background-color: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    text-align: center;
+    transition: transform 0.2s;
+}
+
+.producto:hover {
+    transform: translateY(-4px);
+}
+
+.producto h3 {
+    font-size: 18px;
+    color: #3b2a1a;
+    margin-bottom: 0.5rem;
+}
+
+.producto p {
+    font-size: 14px;
+    color: #7a6652;
+    margin: 4px 0;
+}
+
+.producto .precio {
+    font-size: 20px;
+    font-weight: bold;
+    color: #c9a96e;
+    margin-top: 0.5rem;
+}
+
+footer {
+    background-color: #3b2a1a;
+    color: #d4c5b0;
+    text-align: center;
+    padding: 1.5rem;
+    margin-top: 3rem;
+    font-size: 14px;
+}
